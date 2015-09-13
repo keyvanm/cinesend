@@ -1,0 +1,8 @@
+{% extends "asset_portal/job/job-detail.html" %}
+
+{% block additional_btns %}
+<a href="{% url 'job-create-sendbluray' slug=job.bluray.slug %}" class="btn btn-info">
+    <i class="fa fa-paper-plane"></i>
+    Send Your Bluray
+</a>
+{% endblock %}

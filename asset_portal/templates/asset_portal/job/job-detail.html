@@ -1,0 +1,137 @@
+{% extends 'asset_portal/base_asset_portal.html' %}
+{% load staticfiles %}
+{% load bootstrap3 %}
+{% load django_bootstrap_breadcrumbs %}
+{% load url from future %}
+
+{% load render_table from django_tables2 %}
+
+{% block title %}{{ asset.film_title|title }} Job {{ job.type }}{% endblock title %}
+
+{% block bootstrap3_extra_head %}
+{% endblock %}
+
+{% block breadcrumbs %}
+    {% breadcrumb "Job List" 'job-list' %}
+    {% breadcrumb job.type|add:" ("|add:job.asset.film_title|add:") "|add:" Details" "." %}
+{% endblock %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="page-header">
+                <h1>
+                    <div>{{ job.type }}
+                        <small>({{ job.asset.film_title }})</small>
+                    </div>
+                    <div>
+                        <small>{{ job.created }}</small>
+                    </div>
+                </h1>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" style="margin-bottom: 18px;">
+        <div class="col-sm-8">
+            <table class="table table-notop ">
+                <tr>
+                    <th><i class="fa fa-user"></i> Created by</th>
+                    <td>
+                        <a href="">{{ job.made_by }}</a>
+                    </td>
+                </tr>
+                <tr>
+                    <th><i class="fa fa-file-o"></i> Asset</th>
+                    <td>
+                        <a href="{% url 'asset-detail' slug=job.asset.slug %}">{{ job.asset }}</a>
+                    </td>
+                </tr>
+                <tr>
+                    <th><i class="fa fa-usd"></i> Fee</th>
+                    <td>
+                        {% if job.paid %}
+                            ${{ job.fee }} <i class="fa fa-check text-success"></i>
+                        {% else %}
+                            <a href="{% url 'accounting-cart' %}?pay={{ job.slug }}" class="text-danger">
+                                ${{ job.fee }} <i class="fa fa-times text-danger"></i>
+                            </a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% block job_inner_details %}
+                {% endblock job_inner_details %}
+            </table>
+        </div>
+        <div class="col-sm-4">
+            {% block job_status %}
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">
+                                    <i class="fa fa-info-circle"></i>
+                                    Status:
+                                    {{ job.get_status_display }}
+                                </h3>
+                            </div>
+                            <div class="panel-body">
+                                <div class="progress">
+                                    <div class="progress-bar progress-bar-{% if job.status < 100 %}warning{% else %}success{% endif %}"
+                                         style="width: {{ job.status }}%;">
+                                        <span class="sr-only">{{ job.status }}% Complete</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endblock %}
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="btn-group-vertical full-width" role="group" aria-label="...">
+                        {% block additional_btns %}{% endblock %}
+                        {% if job.type != "Shipping" %}
+                            <a href="{% url 'job-edit' slug=job.slug %}" class="btn btn-default">
+                                <i class="fa fa-edit"></i>
+                                Edit
+                            </a>
+                            <a href="{% url 'job-delete' slug=job.slug %}" class="btn btn-primary">
+                                <i class="fa fa-trash"></i>
+                                Delete
+                            </a>
+                        {% endif %}
+                        {% if not job.paid %}
+                            <a href="{% url 'accounting-cart' %}?pay={{ job.slug }}" class="btn btn-info">
+                                <i class="fa fa-money"></i>
+                                Pay
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        <i class="fa fa-file-text-o"></i>
+                        Notes
+                    </h3>
+                </div>
+                <div class="panel-body">
+                    {% if job.notes %}
+                        {{ job.notes }}
+                    {% else %}
+                        No notes to display
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}

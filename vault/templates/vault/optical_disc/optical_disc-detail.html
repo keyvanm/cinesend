@@ -1,0 +1,134 @@
+{% extends 'vault/base_vault.html' %}
+{% load staticfiles %}
+{% load bootstrap3 %}
+{% load url from future %}
+{% load sizefieldtags %}
+
+
+{% block title %}{{ disc.title }}{% endblock %}
+
+{% block bootstrap3_extra_head %}
+{% endblock %}
+
+{% block bootstrap3_extra_script %}
+    <script>
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        })
+    </script>
+{% endblock %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="page-header">
+                <h1>
+                    <div>{{ disc.title }}</div>
+                </h1>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" style="margin-bottom: 18px;">
+        <div class="col-sm-8">
+            <table class="table table-notop ">
+                <tr>
+                    <th><i class="fa fa-usd"></i> Asset</th>
+                    <td>
+                        <a href="{% url 'asset-detail' slug=disc.asset.slug %}">{{ disc.asset }}</a>
+                    </td>
+                </tr>
+                <tr>
+                    <th><i class="fa fa-usd"></i> Running time</th>
+                    <td>
+                        {{ disc.running_time }}
+                    </td>
+                </tr>
+                <tr>
+                    <th><i class="fa fa-user"></i> Date Encoded</th>
+                    <td>
+                        {{ disc.created }}
+                    </td>
+                </tr>
+                <tr>
+                    <th><i class="fa fa-file-o"></i> Frame Rate</th>
+                    <td>
+                        {{ disc.get_frame_rate_display }}
+                    </td>
+                </tr>
+                <tr>
+                    <th><i class="fa fa-usd"></i> Aspect Ratio</th>
+                    <td>
+                        {{ disc.get_aspect_ratio_display }}
+                    </td>
+                </tr>
+                <tr>
+                    <th><i class="fa fa-usd"></i> Audio Track 1</th>
+                    <td>
+                        {{ disc.get_audio_track_1_display }}
+                    </td>
+                </tr>
+                <tr>
+                    <th><i class="fa fa-usd"></i> Audio Track 2</th>
+                    <td>
+                        {{ disc.get_audio_track_2_display|default:"None" }}
+                    </td>
+                </tr>
+                <tr>
+                    <th><i class="fa fa-usd"></i> Audio Language</th>
+                    <td>
+                        {{ disc.get_audio_language_display }}
+                    </td>
+                </tr>
+                <tr>
+                    <th><i class="fa fa-usd"></i> Subtitle Language</th>
+                    <td>
+                        {{ disc.get_subtitle_language_display }}
+                    </td>
+                </tr>
+                <tr>
+                    <th><i class="fa fa-usd"></i> Subtitle Type</th>
+                    <td>
+                        {{ disc.get_subtitle_type_display }}
+                    </td>
+                </tr>
+                <tr>
+                    <th><i class="fa fa-usd"></i> Letterboxed</th>
+                    <td>
+                        {% if disc.letterboxed %}
+                            <i class="text-success fa fa-check"></i>
+                        {% else %}
+                            <i class="text-danger fa fa-times"></i>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th><i class="fa fa-usd"></i> Pillarboxed</th>
+                    <td>
+                        {% if disc.pillarboxed %}
+                            <i class="text-success fa fa-check"></i>
+                        {% else %}
+                            <i class="text-danger fa fa-times"></i>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% block disc_details %}
+                {% endblock disc_details %}
+            </table>
+        </div>
+
+
+        <div class="col-sm-4">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="btn-group-vertical full-width" role="group" aria-label="...">
+                        {% block disc_options %}
+                        {% endblock disc_options %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}

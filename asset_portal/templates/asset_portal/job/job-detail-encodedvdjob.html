@@ -1,0 +1,15 @@
+{% extends "asset_portal/job/job-detail.html" %}
+{% block job_inner_details %}
+	<th><i class="fa fa-cc"></i> Video Format</th>
+	<td>
+		{{ job.video_format }}
+	</td>
+</tr>
+{% endblock job_inner_details %}
+
+{% block additional_btns %}
+<a href="{% url 'job-create-senddvd' slug=job.dvd.slug %}" class="btn btn-info">
+    <i class="fa fa-paper-plane"></i>
+    Send Your DVD
+</a>
+{% endblock %}

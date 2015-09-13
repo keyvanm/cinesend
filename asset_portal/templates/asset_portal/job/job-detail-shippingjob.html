@@ -1,0 +1,12 @@
+{% extends "asset_portal/job/job-detail.html" %}
+{% block job_inner_details %}
+    <tr>
+        <th><i class="fa fa-truck"></i> FedEx tracking number</th>
+        <td>
+            <a target="_blank"
+               href="https://www.fedex.com/apps/fedextrack/?action=track&trackingnumber={{ job.fedex_tracking }}">
+                <i class="fa fa-external-link"></i> {{ job.fedex_tracking }}
+            </a>
+        </td>
+    </tr>
+{% endblock job_inner_details %}

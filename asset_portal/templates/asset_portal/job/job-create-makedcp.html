@@ -1,0 +1,32 @@
+{% extends "asset_portal/job/job-create.html" %}
+
+{% block bootstrap3_extra_script %}
+    {{ block.super }}
+    <script type="text/javascript">
+        var basePrice = {{ price }};
+        var extraPriceByNumCopies = {{ extra_price }};
+        $(function () {
+            $("#id_number_of_copies > option").each(function () {
+                var extraPrice = (($(this).val() - 1) * extraPriceByNumCopies);
+                if (extraPrice)
+                    $(this).text($(this).text() + " [Add $" + extraPrice + "]");
+            });
+
+            $("#id_number_of_copies").change(function () {
+                $("#num-copies").text($(this).val());
+                var extraPrice = (($(this).val() - 1) * extraPriceByNumCopies);
+                $("#extra-price").text(extraPrice);
+                var newPrice = extraPrice + basePrice;
+                $("#total-price").text(newPrice);
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block price_items %}
+    <li>Make DCP: <span id="base-price">${{ price }}</span></li>
+    <li>Number of copies: <span id="num-copies">1</span> ($<span id="extra-price">0</span>)</li>
+{% endblock %}
+
+{% block job_description %}
+{% endblock job_description %}

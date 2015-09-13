@@ -1,0 +1,67 @@
+{% extends 'asset_portal/base_asset_portal.html' %}
+{% load staticfiles %}
+{% load bootstrap3 %}
+{% load django_select2_tags %}
+{% load django_bootstrap_breadcrumbs %}
+{% load url from future %}
+
+{% block title %}Create Job {{ form.Meta.model.type }}{% endblock title %}
+
+{% block bootstrap3_extra_head %}
+    {% import_django_select2_css %}
+    {{ form.media }}
+{% endblock %}
+
+{% block bootstrap3_extra_script %}
+    {% import_django_select2_js %}
+{% endblock %}
+
+{% block breadcrumbs %}
+    {% breadcrumb "Asset List" 'asset-list' %}
+    {% breadcrumb asset.film_title|add:" Details" 'asset-detail' asset.slug %}
+    {% breadcrumb form.Meta.model.type "." %}
+{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>{{ form.Meta.model.type }}: {{ asset.full_name }}</h1>
+    </div>
+    {% block job_description %}
+    {% endblock job_description %}
+    <div>
+        {% bootstrap_form_errors form %}
+    </div>
+    <div class="row">
+        <div class="col-md-9">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Configure your job</h3>
+                </div>
+                <div class="panel-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {% bootstrap_form form %}
+                        <a href="{% url 'asset-detail' slug=asset.slug %}" class="btn btn-default">Cancel</a>
+                        <input class="btn btn-primary" type="submit" value="Create"/>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Summary</h3>
+                </div>
+                <div class="panel-body">
+                    <ul class="list-unstyled" id="price-items">
+                        {% block price_items %}
+                        {% endblock %}
+                    </ul>
+                    <h3>Total: <i class="fa fa-usd"></i> <span id="total-price">{{ price }}</span></h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock content %}

@@ -1,0 +1,201 @@
+{% extends 'vault/base_vault.html' %}
+{% load staticfiles %}
+{% load bootstrap3 %}
+{% load url from future %}
+{% load sizefieldtags %}
+
+
+{% block title %}{{ dcp }}{% endblock title %}
+
+{% block bootstrap3_extra_head %}
+    <style>
+        .dcp-icon-header {
+            text-align: center;
+            font-size: 55px;
+            margin: -12px 0px 0px 30px;
+        }
+
+        .expand-advanced.collapsed i.fa::before {
+            content: "\f067";
+        }
+
+        .expand-advanced i.fa::before {
+            content: "\f068";
+        }
+    </style>
+{% endblock %}
+
+{% block bootstrap3_extra_script %}
+    <script>
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        })
+    </script>
+{% endblock %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="page-header">
+                <h1>
+                    <div class="row">
+                        <div class="col-md-1">
+                            <h1 style="text-align: center"><i class="fa fa-hdd-o dcp-icon-header"></i></h1>
+                        </div>
+                        <div class="col-md-11">
+                            {{ dcp.asset.film_title }}
+                            {% if asset.dimension_properties == "3D" %}
+                                <span class="label label-info">3D</span>
+                            {% endif %}
+                            <div>
+                                <small>{{ dcp.version_name }}</small>
+                            </div>
+                        </div>
+                    </div>
+                </h1>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" style="margin-bottom: 18px;">
+        <div class="col-sm-8">
+            <table class="table table-notop ">
+                <tr>
+                    <th><i class="fa fa-file-o"></i> Asset</th>
+                    <td>
+                        <a href="{% url 'asset-detail' slug=dcp.asset.slug %}">{{ dcp.asset }}</a>
+                    </td>
+                </tr>
+                <tr>
+                    <th><i class="fa fa-user"></i> Date Encoded</th>
+                    <td>
+                        {{ dcp.created }}
+                    </td>
+                </tr>
+                <tr>
+                    <th><i class="fa fa-usd"></i> Container</th>
+                    <td>
+                        {{ dcp.get_container_display }}
+                    </td>
+                </tr>
+                <tr>
+                    <th><i class="fa fa-usd"></i> Standard</th>
+                    <td>
+                        {{ dcp.get_dcp_standard_display }}
+                    </td>
+                </tr>
+                <tr>
+                    <th><i class="fa fa-usd"></i> Frame Rate</th>
+                    <td>
+                        {{ dcp.get_frame_rate_display }}
+                    </td>
+                </tr>
+                <tr>
+                    <th><i class="fa fa-usd"></i> Running time</th>
+                    <td>
+                        {{ dcp.running_time }}
+                    </td>
+                </tr>
+                <tr>
+                    <th><i class="fa fa-usd"></i> Credit offset</th>
+                    <td>
+                        {{ dcp.credit_offset }}
+                    </td>
+                </tr>
+                <tr>
+                    <th><i class="fa fa-usd"></i> Audio Format</th>
+                    <td>
+                        {{ dcp.asset.get_source_audio_format_display }}
+                    </td>
+                </tr>
+                <tr>
+                    <th><i class="fa fa-user"></i> Audio Language</th>
+                    <td>
+                        {{ dcp.asset.get_audio_language_display }}
+                    </td>
+                </tr>
+                <tr>
+                    <th><i class="fa fa-file-o"></i> Subtitle Language</th>
+                    <td>
+                        {{ dcp.asset.get_subtitle_language_display }}
+                    </td>
+                </tr>
+                <tr>
+                    <th><i class="fa fa-usd"></i> Subtitle Type</th>
+                    <td>
+                        {{ dcp.get_subtitle_type_display }}
+                    </td>
+                </tr>
+            </table>
+            <h4>
+                <a class="expand-advanced collapsed" data-toggle="collapse" href="#advancedDetails">
+                    <i class="fa"></i>
+                    View advanced details
+                </a>
+            </h4>
+
+            <div class="collapse" id="advancedDetails">
+                <table class="table table-notop ">
+                    <tr>
+                        <th><i class="fa fa-usd"></i> Territory</th>
+                        <td>
+                            {{ dcp.asset.get_territory_display }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><i class="fa fa-user"></i> File Size</th>
+                        <td>
+                            {{ dcp.file_size|filesize }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><i class="fa fa-usd"></i> PKL Name</th>
+                        <td>
+                            {{ dcp.pkl_name }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><i class="fa fa-file-o"></i> Composition Name</th>
+                        <td>
+                            {{ dcp.composition_name }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><i class="fa fa-usd"></i> Number of Reels</th>
+                        <td>
+                            {{ dcp.number_of_reels }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><i class="fa fa-usd"></i> Issuer</th>
+                        <td>
+                            {{ dcp.get_issuer_display }}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="btn-group-vertical full-width" role="group" aria-label="...">
+                        <a href="{% url 'dcp-delete' slug=dcp.slug %}" class="btn btn-primary">
+                            <i class="fa fa-trash"></i>
+                            Delete
+                        </a>
+                        <a href="#" class="btn btn-success">
+                            <i class="fa fa-paper-plane"></i>
+                            Send to theater
+                        </a>
+                        <a href="#" class="btn btn-info">
+                            <i class="fa fa-shopping-cart"></i>
+                            Order copy
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}

@@ -1,0 +1,26 @@
+{% extends 'vault/optical_disc/optical_disc-detail.html' %}
+{% block disc_details %}
+    <tr>
+        <th><i class="fa fa-usd"></i> Encoding</th>
+        <td>
+            {{ disc.get_encoding_display }}
+        </td>
+    </tr>
+    <tr>
+        <th><i class="fa fa-usd"></i> Resolution</th>
+        <td>
+            {{ disc.get_resolution_display }}
+        </td>
+    </tr>
+{% endblock disc_details %}
+
+{% block disc_options %}
+    <a href="{% url 'job-create-sendbluray' slug=disc.slug %}" class="btn btn-info">
+        <i class="fa fa-paper-plane"></i>
+        Send Your Bluray
+    </a>
+    <a href="{% url 'bluray-delete' slug=disc.slug %}" class="btn btn-primary">
+        <i class="fa fa-trash"></i>
+        Delete
+    </a>
+{% endblock disc_options %}

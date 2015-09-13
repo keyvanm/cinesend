@@ -1,0 +1,13 @@
+{% extends "asset_portal/job/job-detail.html" %}
+{% block job_inner_details %}
+<tr>
+	<th><i class="fa fa-location-arrow"></i> Addresses</th>
+	<td>
+		<ul class="list-unstyled">
+		{% for addr in job.addresses.all %}
+			{{ addr }}
+		{% endfor %}
+		</ul>
+	</td>
+</tr>
+{% endblock job_inner_details %}

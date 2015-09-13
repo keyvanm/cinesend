@@ -1,0 +1,38 @@
+{% extends "asset_portal/job/job-detail.html" %}
+{% block job_inner_details %}
+<tr>
+	<th><i class="fa fa-volume-up"></i> Content reformatting</th>
+	<td>
+		<ul class="list-unstyled">
+			{% if job.two_d_to_3d %}
+				<li>2D Conversion from 3D</li>
+			{% endif %}
+			{% if job.four_k_to_2K_scaling %}
+				<li>4K to 2K Scaling</li>
+			{% endif %}
+			{% if job.foureight_fps_to_twofour_fps %}
+				<li>48 fps to 24 fps Conversion</li>
+			{% endif %}
+			{% if job.audio_adjustment_to_85dBs %}
+				<li>Audio Adjustment to 85dB SPL</li>
+			{% endif %}
+		</ul>
+	</td>
+</tr>
+<tr>
+	<th><i class="fa fa-cc"></i> Create encrypted DCP</th>
+	<td>
+	{% if job.create_encrypted_dcp %}
+		<i class="text-success fa fa-check"></i>
+	{% else %}
+		<i class="text-danger fa fa-times"></i>
+	{% endif %}
+	</td>
+</tr>
+<tr>
+	<th><i class="fa fa-files-o"></i> Number of copies</th>
+	<td>
+	{{ job.number_of_copies }}
+	</td>
+</tr>		
+{% endblock job_inner_details %}

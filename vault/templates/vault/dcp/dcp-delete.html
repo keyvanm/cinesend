@@ -1,0 +1,36 @@
+{% extends 'vault/base_vault.html' %}
+{% load staticfiles %}
+{% load bootstrap3 %}
+{% load url from future %}
+
+
+{% block title %}{{ dcp }}{% endblock title %}
+
+{% block bootstrap3_extra_head %}
+{% endblock %}
+
+{% block bootstrap3_extra_script %}
+    <script>
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        })
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>Delete DCP</h1>
+    </div>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            Are you sure you want to delete {{ dcp }}?
+        </div>
+        <div class="panel-body">
+            <form method="post">
+                {% csrf_token %}
+                <a href="{% url 'dcp-detail' slug=dcp.slug %}" class="btn btn-default">Cancel</a>
+                <input class="btn btn-primary" type="submit" value="Delete"/>
+            </form>
+        </div>
+    </div>
+{% endblock %}

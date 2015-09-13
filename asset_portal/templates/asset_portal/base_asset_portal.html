@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load django_bootstrap_breadcrumbs %}
+{% block base_content %}
+
+    <div class="alert alert-info" role="alert">
+        <p>
+            Welcome to the CineSend Beta! We'll be adding new features slowly over the next few weeks, that we're sure
+            you'll love. If you need help getting started, notice any bugs, or are confused by any pages, give us a call
+            at 1-888-634-5470 or e-mail us at <a href="mailto:support@bitcine.com">support@bitcine.com</a>
+        </p>
+    </div>
+
+    {% block breadcrumbs %}
+    {% endblock %}
+    <div class="panel">
+        {% render_breadcrumbs "django_bootstrap_breadcrumbs/bootstrap3.html" %}
+    </div>
+{% endblock base_content %}

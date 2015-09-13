@@ -1,0 +1,41 @@
+{% extends 'asset_portal/base_asset_portal.html' %}
+{% load staticfiles %}
+{% load bootstrap3 %}
+{% load django_select2_tags %}
+{% load django_bootstrap_breadcrumbs %}
+{% load url from future %}
+
+{% block title %}Delete Job{% endblock title %}
+
+{% block bootstrap3_extra_head %}
+{% import_django_select2_css %}
+{% endblock %}
+
+{% block bootstrap3_extra_script %}
+{% import_django_select2_js %}
+{% endblock %}
+
+{% block breadcrumbs %}
+	{% breadcrumb "Job List" 'asset-list' %}
+	{% breadcrumb "Delete Job "|add:job.type "." %}
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Delete Job</h1>
+</div>
+<div class="panel panel-primary">
+	<div class="panel-heading">
+		Are you sure you want to delete job {{ job.type }}?
+	</div>
+	<div class="panel-body">
+		<form method="post">
+			{% csrf_token %}
+			<a href="{% url 'job-list' %}" class="btn btn-default">Cancel</a>
+			<input class="btn btn-primary" type="submit" value="Delete" />
+		</form>
+	</div>
+</div>
+
+
+{% endblock content %}

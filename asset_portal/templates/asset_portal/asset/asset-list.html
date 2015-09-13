@@ -1,0 +1,56 @@
+{% extends 'asset_portal/base_asset_portal.html' %}
+{% load staticfiles %}
+{% load bootstrap3 %}
+{% load render_table from django_tables2 %}
+{% load django_bootstrap_breadcrumbs %}
+{% load url from future %}
+
+{% block title %}Assets{% endblock title %}
+
+{% block bootstrap3_extra_head %}
+    <link rel="stylesheet"
+          href="//cdn.datatables.net/plug-ins/f2c75b7247b/integration/bootstrap/3/dataTables.bootstrap.css"/>
+
+    {#    <link rel="stylesheet" href="{% static 'css/bootstrap-tables2.css' %}"/>#}
+{% endblock %}
+
+
+{% block breadcrumbs %}
+    {% breadcrumb "Asset List" "." %}
+{% endblock %}
+
+
+{% block content %}
+    <div class="page-header">
+        <h1>My Assets
+            <small><a href="{% url 'asset-create' %}">{% bootstrap_icon "plus" %} Add an asset</a></small>
+        </h1>
+    </div>
+
+    <div class="table-responsive data-tables-responsive">
+        {% render_table assets_table %}
+    </div>
+{% endblock content %}
+
+{% block bootstrap3_extra_script %}
+    <script src="//cdn.datatables.net/1.10.5/js/jquery.dataTables.min.js"></script>
+    <script src="//cdn.datatables.net/plug-ins/f2c75b7247b/integration/bootstrap/3/dataTables.bootstrap.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#assets-table').DataTable({
+                "columnDefs": [
+                    {"orderable": false, "targets": [-1, -2]}
+                ],
+                "order": [],
+                "language": {
+                    "emptyTable": "You don't have any assets yet. Why don't you go ahead and create one?",
+                    "info": "Showing _START_ to _END_ of _TOTAL_ assets",
+                    "infoEmpty": "Showing 0 to 0 of 0 assets",
+                    "infoFiltered": "(filtered from _MAX_ total assets)",
+                    "lengthMenu": "Show _MENU_ assets",
+                    "zeroRecords": "No matching assets found"
+                }
+            });
+        });
+    </script>
+{% endblock bootstrap3_extra_script %}

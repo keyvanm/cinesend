@@ -1,0 +1,28 @@
+{% extends 'asset_portal/job/job-create.html' %}
+{% load django_bootstrap_breadcrumbs %}
+{% load url from future %}
+{% load bootstrap3 %}
+
+{% block breadcrumbs %}
+	{% breadcrumb "Job List" 'job-list' %}
+	{% breadcrumb "Edit Job "|add:form.instance.type "." %}
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Edit Job {{ form.Meta.model.type }}</h1>
+</div>
+<div>
+	{% bootstrap_form_errors form %}
+</div>
+<div class="well">
+	<form method="post">
+		{% csrf_token %}
+		{% bootstrap_form form %}
+		<a href="{% url 'job-detail' slug=form.instance.slug %}" class="btn btn-default">Cancel</a>
+		<input class="btn btn-primary" type="submit" value="Submit" />
+	</form>
+</div>
+
+
+{% endblock content %}

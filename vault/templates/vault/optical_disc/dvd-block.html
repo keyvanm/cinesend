@@ -1,0 +1,17 @@
+<div class="col-md-1 vault-item">
+    <div class="dropdown pull-right vault-options">
+        <button class="btn btn-link dropdown-toggle" type="button"
+                data-toggle="dropdown">
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+            <li><a href="{% url 'job-create-senddvd' slug=dvd.slug %}">Send DVD</a></li>
+            <li class="divider"></li>
+            <li><a href="{% url 'dvd-delete' slug=dvd.slug %}">Delete</a></li>
+        </ul>
+    </div>
+    <a href="{% url 'dvd-detail' slug=dvd.slug %}">
+        <i class="fa fa-circle-o vault-icon"></i>
+        {{ dvd.title }}
+    </a>
+</div>

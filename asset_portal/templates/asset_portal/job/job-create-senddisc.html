@@ -1,0 +1,17 @@
+{% extends "asset_portal/job/job-create.html" %}
+
+{% block bootstrap3_extra_script %}
+    {{ block.super }}
+    <script type="text/javascript">
+        $("#total-price").text(0);
+        var basePrice = {{ price }};
+        $(function () {
+            $("#id_addresses").change(function () {
+                $("#total-price").text($(this).find(":selected").length * basePrice);
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block job_description %}
+{% endblock job_description %}

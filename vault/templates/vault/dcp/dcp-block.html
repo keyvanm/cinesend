@@ -1,0 +1,17 @@
+<div class="col-md-1 vault-item">
+    <div class="dropdown pull-right vault-options">
+        <button class="btn btn-link dropdown-toggle" type="button"
+                data-toggle="dropdown">
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+{#            <li><a href="{% url 'job-create-senddcp' %}">Send DCP</a></li>#}
+            <li class="divider"></li>
+            <li><a href="{% url 'dcp-delete' slug=dcp.slug %}">Delete</a></li>
+        </ul>
+    </div>
+    <a href="{% url 'dcp-detail' slug=dcp.slug %}">
+        <i class="fa fa-hdd-o vault-icon"></i>
+        {{ dcp.version_name }}
+    </a>
+</div>

@@ -1,0 +1,112 @@
+{% extends 'asset_portal/base_asset_portal.html' %}
+{% load staticfiles %}
+{% load bootstrap3 %}
+{% load django_bootstrap_breadcrumbs %}
+{% load url from future %}
+{% load my_flatpages_tags %}
+
+{% block title %}
+    {{ asset }} Tracking Details
+{% endblock %}
+
+{% block breadcrumbs %}
+    {% breadcrumb "Asset List" 'asset-list' %}
+    {% breadcrumb asset.film_title|add:" Details" 'asset-detail' asset.slug %}
+    {% breadcrumb asset.film_title|add:" Tracking Details" '.' %}
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="page-header">
+                <h1>
+                    Submit my content
+                </h1>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="alert alert-warning" role="alert">
+                <p>
+                    You’re almost there! You’ve input the details for your film, and now you just need to send us your
+                    master file. Soon you’ll be able to upload short format content, but in the meantime, you’ll need to
+                    ship us your content on a drive. Check the specs below, and don’t hesitate to ask us for help if
+                    you’re not sure about something.
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        <i class="fa fa-tags"></i>
+                        Delivery Options
+                    </h3>
+                </div>
+                <div class="panel-body">
+                    {% load_flat_page_content "/delivery-options/" "static-content/delivery-options.html" %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">
+                                <i class="fa fa-envelope-o"></i>
+                                Shipping Directions
+                            </h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <address>
+                                        <strong>CineSend c/o Redlab</strong><br>
+                                        26 Soho St., Suite 100<br>
+                                        Toronto, ON, Canada<br>
+                                        M5T 1Z7<br>
+                                        <i class="fa fa-phone"></i> 1 - (888) 634-5470
+                                    </address>
+                                </div>
+                                <div class="col-md-8">
+                                    <p class="lead">Clearly label your drives with tracking number:</p>
+
+                                    <div class="lead center-block"><code>{{ asset.tracking_number_display }}</code>
+                                    </div>
+                                    <p>Need a FedEx waybill? Call us at 1 - (888) 634-5470</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">
+                                <i class="fa fa-envelope-o"></i>
+                                Delivery Notes
+                            </h3>
+                        </div>
+                        <div class="panel-body">
+                            {% load_flat_page_content "/delivery-notes/" "static-content/delivery-notes.html" %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="pull-right">
+                <a class="btn btn-info" href="{% url 'job-create-makedcp' asset.slug %}">Make your DCP now!</a>
+                <a class="btn btn-primary" href="{% url 'asset-detail' asset.slug %}">Continue</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,17 @@
+<div class="col-md-1 vault-item">
+    <div class="dropdown pull-right vault-options">
+        <button class="btn btn-link dropdown-toggle" type="button"
+                data-toggle="dropdown">
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+            <li><a href="{% url 'job-create-sendbluray' slug=bluray.slug %}">Send Bluray</a></li>
+            <li class="divider"></li>
+            <li><a href="{% url 'bluray-delete' slug=bluray.slug %}">Delete</a></li>
+        </ul>
+    </div>
+    <a href="{% url 'bluray-detail' slug=bluray.slug %}">
+        <i class="fa fa-circle-o vault-icon"></i>
+        {{ bluray.title }}
+    </a>
+</div>

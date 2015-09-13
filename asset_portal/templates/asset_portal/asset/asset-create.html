@@ -1,0 +1,41 @@
+{% extends 'asset_portal/base_asset_portal.html' %}
+{% load staticfiles %}
+{% load bootstrap3 %}
+{% load django_select2_tags %}
+{% load django_bootstrap_breadcrumbs %}
+{% load url from future %}
+
+{% block title %}Create Asset{% endblock title %}
+
+{% block bootstrap3_extra_head %}
+    {% import_django_select2_css %}
+    <link rel="stylesheet" href="{% static 'css/select2-bootstrap.css' %}"/>
+{% endblock %}
+
+{% block bootstrap3_extra_script %}
+    {% import_django_select2_js %}
+{% endblock %}
+
+{% block breadcrumbs %}
+    {% breadcrumb "Asset List" 'asset-list' %}
+    {% breadcrumb "Create New Asset" "." %}
+{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>Create asset</h1>
+    </div>
+    <div>
+        {% bootstrap_form_errors form %}
+    </div>
+    <div class="well">
+        <form enctype="multipart/form-data" method="post">
+            {% csrf_token %}
+            {% bootstrap_form form %}
+            <a href="{% url 'asset-list' %}" class="btn btn-default">Cancel</a>
+            <input class="btn btn-primary" type="submit" value="Create"/>
+        </form>
+    </div>
+
+
+{% endblock content %}

@@ -1,0 +1,1 @@
+default_app_config = 'asset_portal.apps.AssetPortalConfig'

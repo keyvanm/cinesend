@@ -1,0 +1,21 @@
+{% extends 'vault/optical_disc/optical_disc-detail.html' %}
+
+{% block disc_details %}
+    <tr>
+        <th><i class="fa fa-usd"></i> Region</th>
+        <td>
+            {{ disc.get_region_display }}
+        </td>
+    </tr>
+{% endblock disc_details %}
+
+{% block disc_options %}
+    <a href="{% url 'job-create-senddvd' slug=disc.slug %}" class="btn btn-info">
+        <i class="fa fa-paper-plane"></i>
+        Send Your DVD
+    </a>
+    <a href="{% url 'dvd-delete' slug=disc.slug %}" class="btn btn-primary">
+        <i class="fa fa-trash"></i>
+        Delete
+    </a>
+{% endblock disc_options %}

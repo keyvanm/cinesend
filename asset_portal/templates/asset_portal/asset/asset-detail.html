@@ -1,0 +1,444 @@
+{% extends 'asset_portal/base_asset_portal.html' %}
+{% load staticfiles %}
+{% load bootstrap3 %}
+{% load django_bootstrap_breadcrumbs %}
+{% load url from future %}
+
+{% load render_table from django_tables2 %}
+
+{% block title %}{{ asset.film_title|title }} Asset{% endblock title %}
+
+{% block bootstrap3_extra_head %}
+    <style>
+        .asset-poster img {
+            border-radius: 4px;
+        }
+
+        #edit-btn[disabled] {
+            pointer-events: auto !important;
+        }
+
+        #delete-btn {
+            margin-top: -1px;
+        }
+
+        #vault-panel .panel-title {
+            display: inline-block;
+        }
+
+        .vault-icon {
+            font-size: 33px;
+            display: block;
+        }
+
+        .vault-item {
+            text-align: center;
+            padding: 10px;
+            margin-left: 46px;
+            margin-right: 46px;
+        }
+
+        .vault-options {
+            position: absolute;
+            top: 0;
+            right: 0;
+            z-index: 99;
+        }
+
+        .vault-options .dropdown-menu * {
+            z-index: 10000;
+        }
+
+        .vault-options > .dropdown-toggle {
+            padding: 4px 12px 0px;
+        }
+    </style>
+{% endblock %}
+
+{% block bootstrap3_extra_script %}
+    <script>
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        })
+    </script>
+{% endblock %}
+
+{% block breadcrumbs %}
+    {% breadcrumb "Asset List" 'asset-list' %}
+    {% breadcrumb asset.film_title|add:" Details" "." %}
+{% endblock %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="page-header">
+                <h1>
+                    <div>{{ asset.film_title }}
+                        <small>({{ asset.release_year }})</small>
+                        <div>
+                            <small>{{ asset.version_name }}</small>
+                        </div>
+                    </div>
+                </h1>
+                {% if user.is_superuser %}
+                    <a target="_blank"
+                       href="{% url 'admin:asset_portal_asset_change' asset.pk %}">
+                        Go to admin
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% if asset.status == 1 %}
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="alert alert-warning" role="alert">
+                    <p>
+                        We haven’t received your master content for this asset. Jobs you order will be held until the
+                        content is received. Submission guidelines and instructions can be viewed
+                        <a href="{% url 'asset-tracking' asset.slug %}">here</a>.
+                    </p>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="row" style="margin-bottom: 18px;">
+        <div class="col-sm-2 asset-poster">
+            <a href="{% url "asset-edit" asset.slug %}#id_release_year">
+                {% if asset.poster %}
+                    <img width="100%" src="{{ asset.poster.url }}"
+                         alt="">
+                {% else %}
+                    <img width="100%" class="center-block" src="{% static "img/poster-placeholder.png" %}" alt="">
+                {% endif %}
+            </a>
+        </div>
+        <div class="col-sm-7">
+            <table class="table table-notop ">
+                <tr>
+                    <th><i class="fa fa-film"></i> Content Type</th>
+                    <td>
+                        {{ asset.get_content_type_display }}
+                        {% if asset.dimension_properties == "3D" %}
+                            <span class="label label-info">3D</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th><i class="fa fa-volume-up"></i> Audio</th>
+                    <td>
+                        {{ asset.get_audio_language_display }}
+                    </td>
+                </tr>
+                <tr>
+                    <th><i class="fa fa-language"></i> Subtitle</th>
+                    <td>
+                        {{ asset.get_subtitle_language_display }}
+                    </td>
+                </tr>
+                <tr>
+                    <th><i class="fa fa-cc"></i> Closed Captioned</th>
+                    <td>
+                        {% if asset.closed_captioned %}
+                            <i class="fa fa-check text-success"></i>
+                        {% else %}
+                            <i class="fa fa-times text-danger"></i>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th><i class="fa fa-star"></i> Rating</th>
+                    <td>
+                        {{ asset.get_rating_display }}
+                    </td>
+                </tr>
+                <tr>
+                    <th><i class="fa fa-globe"></i> Territory</th>
+                    <td>
+                        {{ asset.get_territory_display }}
+                    </td>
+                </tr>
+                <tr>
+                    <th><i class="fa fa-home"></i> Studio</th>
+                    <td>
+                        {{ asset.studio }}
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-sm-3">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">
+                                <i class="fa fa-info-circle"></i>
+                                Status:
+                                {{ asset.get_status_display }}
+                            </h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="progress">
+                                <div class="progress-bar progress-bar-{% if asset.status < 100 %}warning{% else %}success{% endif %}"
+                                     style="width: {{ asset.status }}%;">
+                                    <span class="sr-only">{{ asset.status }}% Complete</span>
+                                </div>
+                            </div>
+                            <p>Last updated: {{ asset.status_changed }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="btn-group-vertical full-width">
+                <a
+                        {% if asset.status == 100 %}
+                            disabled
+                            data-toggle="tooltip"
+                            title="Online assets cannot be edited"
+                        {% else %}
+                            href="{% url 'asset-edit' slug=asset.slug %}"
+                        {% endif %}
+                            class="btn btn-default" id="edit-btn">
+                    <i class="fa fa-edit"></i>
+                    Edit
+                </a>
+                <a href="{% url 'asset-delete' slug=asset.slug %}" class="btn btn-primary" id="delete-btn">
+                    <i class="fa fa-trash"></i>
+                    Delete
+                </a>
+
+                <div class="btn-group clearfix full-width">
+                    <button class="btn btn-info dropdown-toggle full-width" type="button" data-toggle="dropdown">
+                        <i class="fa fa-cogs"></i>
+                        Request Jobs
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu col-sm-12">
+                        {#                        {% if asset.content_type == "FTR" %}#}
+                        {#                            <li><a href="{% url 'job-create-logochange' slug=asset.slug %}">Request Logo Change</a></li>#}
+                        {#                        {% endif %}#}
+                        {#                        <li><a href="{% url 'job-create-qualitycheck' slug=asset.slug %}">Request Quality Check</a></li>#}
+                        {#                        {% if user.profile.org and request.user.profile.org.type == "RESELLER" %}#}
+                        {#                            <li><a href="{% url 'job-create-physicaldcp' slug=asset.slug %}">Order Physical DCP</a></li>#}
+                        {#                        {% endif %}#}
+                        <li><a href="{% url 'job-create-makedcp' slug=asset.slug %}">Make DCP</a></li>
+                        <li><a href="/make-a-website/">Create a website</a></li>
+                        {#                        <li#}
+                        {#                                {% if disable_send_dcp %}#}
+                        {#                                    class="disabled"#}
+                        {#                                    data-toggle="tooltip"#}
+                        {#                                    title="Make a DCP first in order to send"#}
+                        {#                                {% endif %}>#}
+                        {#                            <a#}
+                        {#                                    {% if not disable_send_dcp %}#}
+                        {#                                        href="{% url 'job-create-senddcp' slug=asset.slug %}"#}
+                        {#                                    {% endif %}>#}
+                        {#                                Send DCP#}
+                        {#                            </a>#}
+                        {#                        </li>#}
+                        <li><a href="{% url 'job-create-encodedvd' slug=asset.slug %}">Order DVD</a></li>
+                        <li><a href="{% url 'job-create-encodebluray' slug=asset.slug %}">Order Blu-ray</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="row text-center">
+                        <div class="col-sm-2">
+                            <i class="fa fa-expand"></i>
+                            <strong>Resolution: <br></strong>
+                            {{ asset.get_source_resolution_display }}
+                        </div>
+                        <div class="col-sm-2">
+                            <i class="fa fa-clock-o"></i>
+                            <strong>Framerate: <br></strong>
+                            {{ asset.get_frame_rate_display }}
+                        </div>
+                        <div class="col-sm-2">
+                            <i class="fa fa-volume-up"></i>
+                            <strong>Audio Format: <br></strong>
+                            {{ asset.get_source_audio_format_display }}
+                        </div>
+                        <div class="col-sm-2">
+                            <i class="fa fa-adjust"></i>
+                            <strong>Colorspace: <br></strong>
+                            {{ asset.get_source_colorspace_display }}
+                        </div>
+
+                        <div class="col-sm-2">
+                            <i class="fa fa-file-audio-o"></i>
+                            <strong>Accessible Audio: <br></strong>
+                            {{ asset.get_accessible_audio_display }}
+                        </div>
+                        <div class="col-sm-2">
+                            <i class="fa fa-file-o"></i>
+                            <strong>File Type: <br></strong>
+                            {{ asset.file_type }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><i class="fa fa-plane"></i> Flight Summary</h3>
+                </div>
+                <div class="panel-body">
+                    {% for flight in flights %}
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <a href="{% url 'flight-detail' pk=flight.pk %}">
+                                    <i class="fa fa-fighter-jet"></i> {{ flight.screening_room.exhibitor }}
+                                    ({{ flight.job.created|date }})
+                                </a>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="progress">
+                                    <div class="progress-bar progress-bar-{% if flight.status < 100 %}warning{% else %}success{% endif %}"
+                                         style="width: {{ flight.status }}%;">
+                                        <span class="sr-only">{{ flight.status }}% Complete</span>
+
+                                        <p class="progress-bar-inner-text">{{ flight.get_status_display }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <p>No flights for this asset</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><i class="fa fa-cogs"></i> Job Summary</h3>
+                </div>
+                <div class="panel-body">
+                    {% for job in jobs %}
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <a href="{% url 'job-detail' slug=job.slug %}">
+                                    <i class="fa fa-cog"></i>
+                                    {{ job.type }} ({{ job.created|date }})
+                                </a>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="progress">
+                                    <div class="progress-bar progress-bar-{% if job.status < 100 %}warning{% else %}success{% endif %}"
+                                         style="width: {{ job.status }}%;">
+                                        <span class="sr-only">{{ job.status }}% Complete</span>
+
+                                        <p class="progress-bar-inner-text">{{ job.get_status_display }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <p>No jobs for this asset</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" id="vault-panel">
+        <div class="col-sm-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        <i class="fa fa-file-archive-o"></i>
+                        Vault
+                    </h3>
+
+{#                    <div class="btn-group pull-right" data-toggle="buttons">#}
+{#                        <label class="btn btn-primary btn-xs active">#}
+{#                            <input type="radio" name="options" id="option1" autocomplete="off" checked> All#}
+{#                        </label>#}
+{#                        <label class="btn btn-primary btn-xs">#}
+{#                            <input type="radio" name="options" id="option2" autocomplete="off" checked> Media#}
+{#                        </label>#}
+{#                        <label class="btn btn-primary btn-xs">#}
+{#                            <input type="radio" name="options" id="option3" autocomplete="off"> Documents#}
+{#                        </label>#}
+{#                        <label class="btn btn-primary btn-xs">#}
+{#                            <input type="radio" name="options" id="option4" autocomplete="off"> Physical Objects#}
+{#                        </label>#}
+{#                    </div>#}
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            {% for dcp_group in dcps %}
+                                <div class="row">
+                                    {% for dcp in dcp_group %}
+                                        {% if dcp %}
+                                            {% include 'vault/dcp/dcp-block.html' %}
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            {% for dvd_group in dvds %}
+                                <div class="row">
+                                    {% for dvd in dvd_group %}
+                                        {% if dvd %}
+                                            {% include 'vault/optical_disc/dvd-block.html' %}
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            {% for bluray_group in blurays %}
+                                <div class="row">
+                                    {% for bluray in bluray_group %}
+                                        {% if bluray %}
+                                            {% include 'vault/optical_disc/bluray-block.html' %}
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        <i class="fa fa-file-text-o"></i>
+                        Notes
+                    </h3>
+                </div>
+                <div class="panel-body">
+                    {% if asset.notes %}
+                        {{ asset.notes }}
+                    {% else %}
+                        No notes to display
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

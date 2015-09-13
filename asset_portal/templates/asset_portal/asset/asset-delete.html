@@ -1,0 +1,53 @@
+{% extends 'asset_portal/base_asset_portal.html' %}
+{% load staticfiles %}
+{% load bootstrap3 %}
+{% load django_select2_tags %}
+{% load django_bootstrap_breadcrumbs %}
+{% load url from future %}
+
+{% block title %}Delete Asset{% endblock title %}
+
+{% block bootstrap3_extra_head %}
+{% import_django_select2_css %}
+{% endblock %}
+
+{% block bootstrap3_extra_script %}
+{% import_django_select2_js %}
+{% endblock %}
+
+{% block breadcrumbs %}
+	{% breadcrumb "Asset List" 'asset-list' %}
+	{% breadcrumb "Delete Asset "|add:asset.film_title "." %}
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Delete asset</h1>
+</div>
+{% if not jobs %}
+<div class="panel panel-primary">
+	<div class="panel-heading">
+		Are you sure you want to delete asset {{ asset.film_title }}?
+	</div>
+	<div class="panel-body">
+		<form method="post">
+			{% csrf_token %}
+			<a href="{% url 'asset-detail' slug=asset.slug %}" class="btn btn-default">Cancel</a>
+			<input class="btn btn-primary" type="submit" value="Delete" />
+		</form>
+	</div>
+</div>
+{% else %}
+<div class="alert alert-danger" role="alert">
+	Asset {{ asset.film_title }} can't be deleted due to the following outstanding active jobs:
+	<ul>
+		{% for job in jobs %}
+			<li><a href="{% url 'job-detail' slug=job.slug %}">{{ job }}</a></li>
+		{% endfor %}
+	</ul>
+</div>
+<a href="{% url 'asset-detail' slug=asset.slug %}" class="btn btn-default">Go back</a>
+{% endif %}
+
+
+{% endblock content %}

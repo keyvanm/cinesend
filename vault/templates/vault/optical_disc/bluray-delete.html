@@ -1,0 +1,5 @@
+{% extends 'vault/optical_disc/optical_disc-delete.html' %}
+{% block disc_type %}DVD{% endblock %}
+{% block cancel_btn %}
+    <a href="{% url 'bluray-detail' slug=disc.slug %}" class="btn btn-default">Cancel</a>
+{% endblock %}

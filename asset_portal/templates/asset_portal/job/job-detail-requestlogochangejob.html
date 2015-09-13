@@ -1,0 +1,17 @@
+{% extends "asset_portal/job/job-detail.html" %}
+{% block job_inner_details %}
+<tr>
+	<th><i class="fa fa-volume-up"></i> Version Name</th>
+	<td>
+		{{ job.version_name }}
+	</td>
+</tr>
+<tr>
+	<th><i class="fa fa-picture-o"></i> Logos</th>
+	<td>
+		{% for logo in job.logos.all %}
+			{{ logo }}
+		{% endfor %}
+	</td>
+</tr>
+{% endblock job_inner_details %}

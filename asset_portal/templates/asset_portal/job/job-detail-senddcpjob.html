@@ -1,0 +1,25 @@
+{% extends "asset_portal/job/job-detail.html" %}
+{% block job_inner_details %}
+<tr>
+	<th><i class="fa fa-location-arrow"></i> Addresses</th>
+	<td>
+		<ul class="list-unstyled">
+		{% for addr in job.addresses.all %}
+			{{ addr }}
+		{% endfor %}
+		</ul>
+	</td>
+</tr>
+<tr>
+	<th><i class="fa fa-play"></i> Screening start date</th>
+	<td>
+		{{ job.screening_start_date }}
+	</td>
+</tr>
+<tr>
+	<th><i class="fa fa-stop"></i> Screening end date</th>
+	<td>
+		{{ job.screening_end_date }}
+	</td>
+</tr>
+{% endblock job_inner_details %}

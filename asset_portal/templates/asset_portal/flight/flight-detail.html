@@ -1,0 +1,70 @@
+{% extends 'asset_portal/base_asset_portal.html' %}
+{% load staticfiles %}
+{% load bootstrap3 %}
+{% load django_bootstrap_breadcrumbs %}
+{% load url from future %}
+
+{% load render_table from django_tables2 %}
+
+{% block title %}{{ asset.film_title|title }} Asset{% endblock title %}
+
+{% block bootstrap3_extra_head %}
+{% endblock %}
+
+{% block breadcrumbs %}
+	{% breadcrumb "Flight List" 'asset-list' %}
+	{% breadcrumb "Flight Details" "." %}
+{% endblock %}
+
+{% block content %}
+
+<div class="row">
+	<div class="col-sm-12">
+		<div class="page-header">
+			<h1>
+				<div>Flight to {{ flight.screening_room.exhibitor }}<div>
+			</h1>
+		</div>
+	</div>
+</div>
+
+<div class="row" style="margin-bottom: 18px;">
+	<div class="col-sm-12">
+		<table class="table table-notop ">
+			<tr>
+				<th><i class="fa fa-map-marker"></i> Address</th>
+				<td>
+					{{ flight.screening_room.exhibitor }}
+				</td>
+			</tr>
+			<tr>
+				<th><i class="fa fa-video-camera"></i> Room</th>
+				<td>
+					{{ flight.screening_room.room_number }}
+				</td>
+			</tr>
+		</table>
+	</div>
+</div>
+<div class="row">
+	<div class="col-sm-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">
+					<i class="fa fa-plane"></i>
+					Status:
+					{{ flight.get_status_display }}
+				</h3>
+			</div>
+			<div class="panel-body">
+				<div class="progress">
+						<div class="progress-bar progress-bar-success" style="width: {{ flight.status }}%;">
+						<span class="sr-only">{{ flight.status }}% Complete</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock content %}

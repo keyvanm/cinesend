@@ -1,0 +1,91 @@
+{% extends 'asset_portal/base_asset_portal.html' %}
+{% load staticfiles %}
+{% load bootstrap3 %}
+{% load render_table from django_tables2 %}
+{% load django_bootstrap_breadcrumbs %}
+{% load url from future %}
+
+{% block title %}Accounting{% endblock title %}
+
+{% block bootstrap3_extra_head %}
+    <link rel="stylesheet"
+          href="//cdn.datatables.net/plug-ins/f2c75b7247b/integration/bootstrap/3/dataTables.bootstrap.css"/>
+    {#    <link rel="stylesheet" href="{% static 'css/bootstrap-tables2.css' %}"/>#}
+    <style>
+        body {
+            margin-bottom: 18px;
+        }
+    </style>
+{% endblock %}
+
+
+{% block breadcrumbs %}
+    {% breadcrumb "Unpaid jobs" '.' %}
+{% endblock %}
+
+{% block content %}
+    <form method="get" action="{% url "accounting-cart" %}">
+        <div class="page-header">
+            <h1>
+                Unpaid Jobs {% if jobs_len %}
+                <input type="submit" class="pay-btn btn btn-primary pull-right" disabled
+                       value="Pay for selected jobs">{% endif %}
+            </h1>
+        </div>
+
+        <div class="table-responsive data-tables-responsive">
+            {% if jobs_len %}
+                {% render_table jobs_table %}
+            {% else %}
+                <p>You have no unpaid jobs</p>
+            {% endif %}
+        </div>
+        {% if jobs_len %}<input type="submit" class="pay-btn btn btn-primary pull-right" disabled
+                                value="Pay for selected jobs">{% endif %}
+    </form>
+{% endblock content %}
+
+{% block bootstrap3_extra_script %}
+    <script src="//cdn.datatables.net/1.10.5/js/jquery.dataTables.min.js"></script>
+    <script src="//cdn.datatables.net/plug-ins/f2c75b7247b/integration/bootstrap/3/dataTables.bootstrap.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#jobs-table').DataTable({
+                "columnDefs": [
+                    {"orderable": false, "targets": 0}
+                ],
+                "order": [],
+                "language": {
+                    "emptyTable": "You don't have any unpaid jobs.",
+                    "info": "Showing _START_ to _END_ of _TOTAL_ unpaid jobs",
+                    "infoEmpty": "Showing 0 to 0 of 0 unpaid jobs",
+                    "infoFiltered": "(filtered from _MAX_ total unpaid jobs)",
+                    "lengthMenu": "Show _MENU_ unpaid jobs",
+                    "zeroRecords": "No matching unpaid jobs found"
+                }
+            });
+            var checked = false;
+            $("th.pay > input[type='checkbox']").bind('change', function (e) {
+                if (!checked) {
+                    $("td.pay > input[type='checkbox']").prop('checked', true);
+                    $(".pay-btn").prop('disabled', false);
+                    checked = true
+                } else {
+                    $("td.pay > input[type='checkbox']").prop('checked', false);
+                    $(".pay-btn").prop('disabled', true);
+                    checked = false
+                }
+            });
+            $("td.pay > input:checkbox").bind("change", function (e) {
+                if ($(this).prop('checked')) {
+                    $(".pay-btn").prop('disabled', false);
+                } else {
+                    if ($('td.pay > input:checkbox').is(':checked'))
+                        $(".pay-btn").prop('disabled', false);
+                    else
+                        $(".pay-btn").prop('disabled', true);
+                }
+            });
+        });
+    </script>
+{% endblock %}
